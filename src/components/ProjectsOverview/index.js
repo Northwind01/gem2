@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
 import { withFirebase } from '../Firebase';
-import MessageList from './MessageList';
+import ProjectList from './ProjectList';
 
-class Messages extends Component {
+class Projects extends Component {
   constructor(props) {
     super(props);
 
@@ -16,44 +16,44 @@ class Messages extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.messages.length) {
+    if (!this.props.projects.length) {
       this.setState({ loading: true });
     }
 
-    this.onListenForMessages();
+    this.onListenForProjects();
   }
 
   componentDidUpdate(props) {
     if (props.limit !== this.props.limit) {
-      this.onListenForMessages();
+      this.onListenForProjects();
     }
   }
 
-  onListenForMessages = () => {
+  onListenForProjects = () => {
     this.props.firebase
-      .messages()
+      .projects()
       .orderByChild('createdAt')
       .limitToLast(this.props.limit)
       .on('value', snapshot => {
-        this.props.onSetMessages(snapshot.val());
+        this.props.onSetProjects(snapshot.val());
 
         this.setState({ loading: false });
       });
   };
 
   componentWillUnmount() {
-    this.props.firebase.messages().off();
+    this.props.firebase.projects().off();
   }
 
   onChangeText = event => {
     this.setState({ text: event.target.value });
   };
 
-  onCreateMessage = (event, authUser) => {
-    this.props.firebase.messages().push({
+  onCreateProject = (event, authUser) => {
+    this.props.firebase.projects().push({
       text: this.state.text,
       userId: authUser.uid,
-      createdAt: this.props.firebase.serverValue.TIMESTAMP,
+      createdAt: this.props.firebase.Timestamp,
     });
 
     this.setState({ text: '' });
@@ -61,31 +61,31 @@ class Messages extends Component {
     event.preventDefault();
   };
 
-  onEditMessage = (message, text) => {
-    const { uid, ...messageSnapshot } = message;
+  onEditProject = (project, text) => {
+    const { uid, ...projectSnapshot } = project;
 
-    this.props.firebase.message(message.uid).set({
-      ...messageSnapshot,
+    this.props.firebase.project(project.uid).set({
+      ...projectSnapshot,
       text,
-      editedAt: this.props.firebase.serverValue.TIMESTAMP,
+      editedAt: this.props.firebase.Timestamp,
     });
   };
 
-  onRemoveMessage = uid => {
-    this.props.firebase.message(uid).remove();
+  onRemoveProject = uid => {
+    this.props.firebase.project(uid).remove();
   };
 
   onNextPage = () => {
-    this.props.onSetMessagesLimit(this.props.limit + 5);
+    this.props.onSetProjectsLimit(this.props.limit + 5);
   };
 
   render() {
-    const { messages } = this.props;
+    const { projects } = this.props;
     const { text, loading } = this.state;
 
     return (
       <div>
-        {!loading && messages && (
+        {!loading && projects && (
           <button type="button" onClick={this.onNextPage}>
             More
           </button>
@@ -93,20 +93,20 @@ class Messages extends Component {
 
         {loading && <div>Loading ...</div>}
 
-        {messages && (
-          <MessageList
+        {projects && (
+          <ProjectList
             authUser={this.props.authUser}
-            messages={messages}
-            onEditMessage={this.onEditMessage}
-            onRemoveMessage={this.onRemoveMessage}
+            projects={projects}
+            onEditProject={this.onEditProject}
+            onRemoveProject={this.onRemoveProject}
           />
         )}
 
-        {!messages && <div>There are no messages ...</div>}
+        {!projects && <div>There are no projects ...</div>}
 
         <form
           onSubmit={event =>
-            this.onCreateMessage(event, this.props.authUser)
+            this.onCreateProject(event, this.props.authUser)
           }
         >
           <input
@@ -123,20 +123,20 @@ class Messages extends Component {
 
 const mapStateToProps = state => ({
   authUser: state.sessionState.authUser,
-  messages: Object.keys(state.messageState.messages || {}).map(
+  projects: Object.keys(state.projectState.projects || {}).map(
     key => ({
-      ...state.messageState.messages[key],
+      ...state.projectState.projects[key],
       uid: key,
     }),
   ),
-  limit: state.messageState.limit,
+  limit: state.projectState.limit,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onSetMessages: messages =>
-    dispatch({ type: 'MESSAGES_SET', messages }),
-  onSetMessagesLimit: limit =>
-    dispatch({ type: 'MESSAGES_LIMIT_SET', limit }),
+  onSetProjects: projects =>
+    dispatch({ type: 'PROJECTS_SET', projects }),
+  onSetProjectsLimit: limit =>
+    dispatch({ type: 'PROJECTS_LIMIT_SET', limit }),
 });
 
 export default compose(
@@ -145,4 +145,4 @@ export default compose(
     mapStateToProps,
     mapDispatchToProps,
   ),
-)(Messages);
+)(Projects);

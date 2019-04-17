@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { compose } from 'recompose';
+
+import PropTypes from 'prop-types';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
-
-const PasswordForgetPage = () => (
-  <div>
-    <h1>PasswordForget</h1>
-    <PasswordForgetForm />
-  </div>
-);
+import styles from '../styles/signForms';
 
 const INITIAL_STATE = {
   email: '',
@@ -47,33 +54,65 @@ class PasswordForgetFormBase extends Component {
 
     const isInvalid = email === '';
 
-    return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="email"
-          value={this.state.email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-        <button disabled={isInvalid} type="submit">
-          Reset My Password
-        </button>
+    const { classes } = this.props;
 
-        {error && <p>{error.message}</p>}
-      </form>
+    return (
+      <main className={classes.main}>
+        <CssBaseline />
+        <Paper className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Reset password
+          </Typography>
+          <form className={classes.form} onSubmit={this.onSubmit}>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="email">Email address</InputLabel>
+              <Input 
+                id="email" 
+                name="email" 
+                autoComplete="email" 
+                autoFocus
+                value={email}
+                onChange={this.onChange}
+                type="text"
+                placeholder="Email address" />
+            </FormControl>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              disabled={isInvalid}
+            >
+              Reset password
+            </Button>
+
+            {error && <p>{error.message}</p>}
+          </form>
+        </Paper>
+      </main>
     );
   }
 }
 
+PasswordForgetFormBase.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
 const PasswordForgetLink = () => (
   <p>
-    <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
+    <Link to={ROUTES.PASSWORD_FORGET}>Forgot password?</Link>
   </p>
 );
 
-export default PasswordForgetPage;
+const PasswordForgetForm = compose(
+  withFirebase,
+  withStyles(styles),
+)(PasswordForgetFormBase);
 
-const PasswordForgetForm = withFirebase(PasswordForgetFormBase);
+export default PasswordForgetForm;
 
 export { PasswordForgetForm, PasswordForgetLink };

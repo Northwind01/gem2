@@ -66,7 +66,7 @@ class LoginManagementBase extends Component {
   };
 
   onDefaultLoginLink = password => {
-    const credential = this.props.firebase.emailAuthProvider.credential(
+    const credential = this.props.firebase.createUserWithEmailAndPassword(
       this.props.authUser.email,
       password,
     );

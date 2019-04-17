@@ -1,11 +1,27 @@
 import React from 'react';
+import { compose } from 'recompose';
+
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 import { withFirebase } from '../Firebase';
 
-const SignOutButton = ({ firebase }) => (
-  <button type="button" onClick={firebase.doSignOut}>
-    Sign Out
-  </button>
+const styles = theme => ({
+  button: {
+    margin: theme.spacing.unit,
+  },
+});
+
+const SignOutButton = ({ firebase, classes }) => (
+  <Button onClick={firebase.doSignOut} className={classes.button}>Sign Out</Button>
 );
 
-export default withFirebase(SignOutButton);
+SignOutButton.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default compose(
+  withFirebase,
+  withStyles(styles),
+)(SignOutButton);
