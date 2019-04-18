@@ -28,7 +28,6 @@ const styles = theme => ({
 
 const NavigationAuth = ({ authUser, classes }) => (
   <div>
-    <Button href={ROUTES.LANDING} className={classes.button}>Landing</Button>
     <Button href={ROUTES.DASHBOARD} className={classes.button}>Dashboard</Button>
     <Button href={ROUTES.ACCOUNT} className={classes.button}>Account</Button>
     {!!authUser.roles[ROLES.ADMIN] && (

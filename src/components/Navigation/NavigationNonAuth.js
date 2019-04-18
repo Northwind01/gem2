@@ -26,7 +26,6 @@ const styles = theme => ({
 
 const NavigationNonAuth = ({ authUser, classes }) => (
   <div>
-    <Button href={ROUTES.LANDING} className={classes.button}>Landing</Button>
     <Button href={ROUTES.SIGN_IN} className={classes.button}>Sign In</Button>
     <Button href={ROUTES.SIGN_UP} className={classes.button}>Sign Up</Button>
   </div>

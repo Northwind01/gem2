@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
@@ -11,9 +10,11 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Icon from '@material-ui/core/Icon';
+import Link from '@material-ui/core/Link';
 
 import NavigationAuth from './NavigationAuth';
 import NavigationNonAuth from './NavigationNonAuth';
+import * as ROUTES from '../../constants/routes';
 
 const styles = theme => ({
   root: {
@@ -37,7 +38,9 @@ const Navigation = ({ authUser, classes }) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" className={classes.grow}>
-            gem! finds sense in data
+            <Link href={ROUTES.LANDING} color="inherit" underline="none">
+              gem - find sense in data
+            </Link>
           </Typography>
           
           {authUser ? (

@@ -26,7 +26,7 @@ class Dashboard extends Component {
             </Grid>
             <Grid item sm>
                 <Paper style={styles.Paper}>
-                    <ProjectsOverview/>
+                    {/* <ProjectsOverview/> */}
                 </Paper>
             </Grid>
         </Grid>
