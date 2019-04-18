@@ -26,7 +26,8 @@ const styles = theme => ({
 
 class Form2 extends React.Component {
   handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
+    const arr = event.target.value.split(', ');
+    this.setState({ [name]: arr });
   };
 
   handleSelectedFile = file => this.setState({FILE: file});
@@ -72,8 +73,8 @@ Form2.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  ...state.project
+const mapStateToProps = state => ({
+  ...state.projectState.projectData
 });
 
 const mapDispatchToProps = dispatch => ({

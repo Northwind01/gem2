@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import NewProject from '../NewProject';
-import ProjectsOverview from '../ProjectsOverview';
+//import ProjectsOverview from '../ProjectsOverview';
 import { compose } from 'recompose';
 
 import { withAuthorization, withEmailVerification } from '../Session';
@@ -9,16 +9,15 @@ import { withAuthorization, withEmailVerification } from '../Session';
 const styles = {
   Paper: { 
       padding: 20, 
-      marginTop: 10, 
-      marginBottom: 10,
-      height: '70vh',
+      margin: 5,
+      height: '75vh',
       overflow: 'auto' }
 }
 
 class Dashboard extends Component {
   render() {
     return (
-        <Grid container spacing={8}>
+        <Grid container spacing={0}>
             <Grid item sm>
                 <Paper style={styles.Paper}>
                     <NewProject/>

@@ -28,9 +28,8 @@ class Form3 extends React.Component {
     this.setState({ [name]: event.target.value });
   };
 
-  componentWillUnmount = () => {
-    console.log(this.state)
-    this.props.saveAnalysisOptions(this.state);
+  componentWillUnmount = async () => {
+    await this.props.saveAnalysisOptions(this.state);
   }
 
   render() {
@@ -55,8 +54,8 @@ Form3.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  ...state.project
+const mapStateToProps = state => ({
+  ...state.projectState.analysisOptions
 });
 
 const mapDispatchToProps = dispatch => ({

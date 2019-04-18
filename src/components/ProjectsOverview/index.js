@@ -50,10 +50,10 @@ class Projects extends Component {
   };
 
   onCreateProject = (event, authUser) => {
-    this.props.firebase.projects().push({
+    this.props.firebase.db.collection('projects').add({
       text: this.state.text,
       userId: authUser.uid,
-      createdAt: this.props.firebase.Timestamp,
+      createdAt: '',
     });
 
     this.setState({ text: '' });
@@ -64,7 +64,7 @@ class Projects extends Component {
   onEditProject = (project, text) => {
     const { uid, ...projectSnapshot } = project;
 
-    this.props.firebase.project(project.uid).set({
+    this.props.firebase.db.collection('projects').doc(project.uid).set({
       ...projectSnapshot,
       text,
       editedAt: this.props.firebase.Timestamp,
@@ -72,7 +72,7 @@ class Projects extends Component {
   };
 
   onRemoveProject = uid => {
-    this.props.firebase.project(uid).remove();
+    this.props.firebase.db.collection('projects').doc(uid).delete();
   };
 
   onNextPage = () => {
@@ -123,13 +123,13 @@ class Projects extends Component {
 
 const mapStateToProps = state => ({
   authUser: state.sessionState.authUser,
-  projects: Object.keys(state.projectState.projects || {}).map(
+  projects: Object.keys(state.projectsState.projects || {}).map(
     key => ({
-      ...state.projectState.projects[key],
+      ...state.projectsState.projects[key],
       uid: key,
     }),
   ),
-  limit: state.projectState.limit,
+  limit: state.projectsState.limit,
 });
 
 const mapDispatchToProps = dispatch => ({

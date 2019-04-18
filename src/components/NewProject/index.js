@@ -15,6 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import Form1 from './Form1';
 import Form2 from './Form2';
 import Form3 from './Form3';
+import ProgressBar from './ProgressBar';
 
 const styles = theme => ({
   root: {
@@ -39,10 +40,15 @@ function getSteps() {
 class VerticalLinearStepper extends Component {
   state = {
     activeStep: 0,
+    uploadingProgress: 0
   };
 
   handleNext = () => {
-    if (this.state.activeStep === 2) this.submitProject();
+    if (this.state.activeStep === 2) {
+      setTimeout(() => {
+        this.onCreateProject(this.props.authUser)
+      }, 500);
+    };
 
     this.setState(state => ({
       activeStep: state.activeStep + 1,
@@ -61,27 +67,29 @@ class VerticalLinearStepper extends Component {
     });
   };
 
-  onCreateProject = (event, authUser) => {
+  onCreateProject = (authUser) => {
     const project = {...this.props.project};
     project['userId'] = authUser.uid;
-    project['createdAt'] = this.props.firebase.Timestamp;
-    delete project.FILE;
+    project['createdAt'] = '';
+    const file = project.projectData.FILE;
+    delete project.projectData.FILE;
 
-    this.props.firebase.projects().add(project)
+    this.props.firebase.db.collection('projects').add(project)
       .then((docRef)=>{
         this.props.saveProjectInfo({id: docRef.id});
 
         const path = 'projectFiles/' + docRef.id + '.csv';
-        const url = this.props.firebase.storage.child(path);
-        const fileUpload = url.put(this.props.project.FILE);
+        const url = this.props.firebase.storage.ref().child(path);
+        const fileUpload = url.put(file);
         fileUpload.on('state_changed', snapshot => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.setState({ uploadingProgress: progress });
           console.log('Upload is ' + progress + 'done');
           switch (snapshot.state) {
-            case this.props.firebase.storage.TaskState.PAUSED:
+            case 'paused':
               console.log('Upload is paused');
               break;
-            case this.props.firebase.storage.TaskState.RUNNING:
+            case 'running':
               console.log('Upload is running');
               break;
           }
@@ -94,8 +102,6 @@ class VerticalLinearStepper extends Component {
         })
       })
       .catch((error)=>console.error('Error creating the project: ', error));
-
-    event.preventDefault();
   };
 
   getStepContent = (step) => {
@@ -150,7 +156,8 @@ class VerticalLinearStepper extends Component {
         </Stepper>
         {activeStep === steps.length && (
           <Paper square elevation={0} className={classes.resetContainer}>
-            <Typography>All steps completed - you have submitted the project</Typography>
+            <Typography >All steps completed - you have submitted the project and are uploading the data</Typography>
+            <ProgressBar uploadingProgress={this.state.uploadingProgress}/>
             <Button onClick={this.handleReset} className={classes.button}>
               Reset
             </Button>
@@ -167,7 +174,7 @@ VerticalLinearStepper.propTypes = {
 
 const mapStateToProps = state => ({
   authUser: state.sessionState.authUser,
-  project: state.project
+  project: state.projectState
 });
 
 const mapDispatchToProps = dispatch => ({

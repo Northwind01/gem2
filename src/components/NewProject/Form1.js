@@ -96,8 +96,8 @@ Form1.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  ...state
+const mapStateToProps = state => ({
+  ...state.projectState.projectInfo
 });
 
 const mapDispatchToProps = dispatch => ({
