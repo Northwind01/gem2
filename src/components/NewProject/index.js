@@ -70,7 +70,8 @@ class VerticalLinearStepper extends Component {
   onCreateProject = (authUser) => {
     const project = {...this.props.project};
     project['userId'] = authUser.uid;
-    project['createdAt'] = '';
+    project['createdAt'] = Date.now();
+    project['status'] = 'open';
     const file = project.projectData.FILE;
     delete project.projectData.FILE;
 

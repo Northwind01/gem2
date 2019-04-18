@@ -1,69 +1,102 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+
 import PropTypes from 'prop-types';
+import { Grid, Paper } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import NoSsr from '@material-ui/core/NoSsr';
-import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 
-function TabContainer(props) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {props.children}
-    </Typography>
-  );
+import { withAuthorization, withEmailVerification } from '../Session';
+import { withFirebase } from '../Firebase';
+import VisualSpace from './VisualSpace';
+
+const styles = {
+  Paper: { 
+      padding: 20, 
+      margin: 5,
+      height: '75vh',
+      overflow: 'auto' }
 }
 
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+class Project extends Component {
+  constructor(props) {
+    super(props);
 
-function LinkTab(props) {
-  return <Tab component="a" onClick={event => event.preventDefault()} {...props} />;
-}
+    this.state = {
+      loading: false,
+    };
+  }
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-});
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    this.setState({ loading: true, id });
+    this.onListenForProject(id);
+  }
 
-class NavTabs extends React.Component {
-  state = {
-    value: 0,
-  };
+  onListenForProject = (id) => {
+    this.unsubscribe = this.props.firebase
+      .db.collection('projects').doc(id)
+      .onSnapshot(doc => {
+        this.props.onSetProject(doc.data());
+        this.setState({ loading: false });
+      });
+  }
 
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
 
   render() {
-    const { classes } = this.props;
-    const { value } = this.state;
+    const { project } = this.props;
+    const { loading } = this.state;
 
     return (
-      <NoSsr>
-        <div className={classes.root}>
-          <AppBar position="static">
-            <Tabs variant="fullWidth" value={value} onChange={this.handleChange}>
-              <LinkTab label="Page One" href="page1" />
-              <LinkTab label="Page Two" href="page2" />
-              <LinkTab label="Page Three" href="page3" />
-            </Tabs>
-          </AppBar>
-          {value === 0 && <TabContainer>Page One</TabContainer>}
-          {value === 1 && <TabContainer>Page Two</TabContainer>}
-          {value === 2 && <TabContainer>Page Three</TabContainer>}
-        </div>
-      </NoSsr>
+      <div>
+      {loading && <Typography >Loading ...</Typography>}
+
+      {project && (
+        <Grid container spacing={0}>
+          <Grid item sm>
+            <Paper style={styles.Paper}>
+              <VisualSpace
+                authUser={this.props.authUser}
+                project={project}
+              />
+            </Paper>
+          </Grid>
+        </Grid>
+      )}
+
+      {!project && <Typography >There is no such projects ...</Typography>}
+    </div>
     );
   }
 }
 
-NavTabs.propTypes = {
+Project.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(NavTabs);
+const mapStateToProps = state => ({
+  authUser: state.sessionState.authUser,
+  project: state.projectsState
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSetProject: project =>
+    dispatch({ type: 'PROJECT_SET', project }),
+});
+
+const condition = authUser => !!authUser;
+
+export default compose(
+  withEmailVerification,
+  withAuthorization(condition),
+  withFirebase,
+  withStyles(styles),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )
+)(Project);

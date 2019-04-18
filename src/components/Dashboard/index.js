@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import NewProject from '../NewProject';
-//import ProjectsOverview from '../ProjectsOverview';
+import ProjectsOverview from '../ProjectsOverview';
 import { compose } from 'recompose';
 
 import { withAuthorization, withEmailVerification } from '../Session';
@@ -25,7 +25,7 @@ class Dashboard extends Component {
             </Grid>
             <Grid item sm>
                 <Paper style={styles.Paper}>
-                    {/* <ProjectsOverview/> */}
+                    <ProjectsOverview/>
                 </Paper>
             </Grid>
         </Grid>

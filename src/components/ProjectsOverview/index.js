@@ -2,15 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
 import { withFirebase } from '../Firebase';
 import ProjectList from './ProjectList';
+
+const styles = {}
 
 class Projects extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      text: '',
       loading: false,
     };
   }
@@ -30,96 +36,101 @@ class Projects extends Component {
   }
 
   onListenForProjects = () => {
-    this.props.firebase
-      .projects()
-      .orderByChild('createdAt')
-      .limitToLast(this.props.limit)
-      .on('value', snapshot => {
-        this.props.onSetProjects(snapshot.val());
-
+    this.unsubscribe = this.props.firebase
+      .db.collection('projects').where("userId", "==", this.props.authUser.uid)
+      .onSnapshot(querySnapshot => {
+        const projects = [];
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          const row = {
+            name: data.projectInfo.name,
+            client: data.projectInfo.client,
+            createdAt: data.createdAt,
+            status: data.status
+          }
+          projects.push(row)
+        })
+        console.log('getting', projects)
+        this.props.onSetProjects(projects);
         this.setState({ loading: false });
       });
-  };
-
-  componentWillUnmount() {
-    this.props.firebase.projects().off();
   }
 
-  onChangeText = event => {
-    this.setState({ text: event.target.value });
-  };
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
 
-  onCreateProject = (event, authUser) => {
-    this.props.firebase.db.collection('projects').add({
-      text: this.state.text,
-      userId: authUser.uid,
-      createdAt: '',
-    });
+  // onCreateProject = (event, authUser) => {
+  //   this.props.firebase.db.collection('projects').add({
+  //     text: this.state.text,
+  //     userId: authUser.uid,
+  //     createdAt: '',
+  //   });
 
-    this.setState({ text: '' });
+  //   this.setState({ text: '' });
 
-    event.preventDefault();
-  };
+  //   event.preventDefault();
+  // };
 
-  onEditProject = (project, text) => {
-    const { uid, ...projectSnapshot } = project;
+  // onEditProject = (project, text) => {
+  //   const { uid, ...projectSnapshot } = project;
 
-    this.props.firebase.db.collection('projects').doc(project.uid).set({
-      ...projectSnapshot,
-      text,
-      editedAt: this.props.firebase.Timestamp,
-    });
-  };
+  //   this.props.firebase.db.collection('projects').doc(project.uid).set({
+  //     ...projectSnapshot,
+  //     text,
+  //     editedAt: this.props.firebase.Timestamp,
+  //   });
+  // };
 
-  onRemoveProject = uid => {
-    this.props.firebase.db.collection('projects').doc(uid).delete();
-  };
+  // onRemoveProject = uid => {
+  //   this.props.firebase.db.collection('projects').doc(uid).delete();
+  // };
 
   onNextPage = () => {
     this.props.onSetProjectsLimit(this.props.limit + 5);
   };
 
   render() {
-    const { projects } = this.props;
-    const { text, loading } = this.state;
+    const { projects, classes } = this.props;
+    const { loading } = this.state;
 
     return (
       <div>
-        {!loading && projects && (
-          <button type="button" onClick={this.onNextPage}>
-            More
-          </button>
-        )}
+        <Typography variant='h5'>Overview of existing projects</Typography>
 
-        {loading && <div>Loading ...</div>}
+        {loading && <Typography >Loading ...</Typography>}
 
         {projects && (
           <ProjectList
             authUser={this.props.authUser}
             projects={projects}
-            onEditProject={this.onEditProject}
-            onRemoveProject={this.onRemoveProject}
+            // onEditProject={this.onEditProject}
+            // onRemoveProject={this.onRemoveProject}
           />
         )}
 
-        {!projects && <div>There are no projects ...</div>}
+        {!projects && <Typography >There are no projects ...</Typography>}
 
-        <form
-          onSubmit={event =>
-            this.onCreateProject(event, this.props.authUser)
-          }
-        >
-          <input
-            type="text"
-            value={text}
-            onChange={this.onChangeText}
-          />
-          <button type="submit">Send</button>
-        </form>
+        {!loading && projects && (
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={this.onNextPage}
+          >
+            More
+        </Button>
+        )}
       </div>
     );
   }
 }
+
+Projects.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = state => ({
   authUser: state.sessionState.authUser,
@@ -141,6 +152,7 @@ const mapDispatchToProps = dispatch => ({
 
 export default compose(
   withFirebase,
+  withStyles(styles),
   connect(
     mapStateToProps,
     mapDispatchToProps,
