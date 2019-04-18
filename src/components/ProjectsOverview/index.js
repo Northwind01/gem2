@@ -10,7 +10,16 @@ import Button from '@material-ui/core/Button';
 import { withFirebase } from '../Firebase';
 import ProjectList from './ProjectList';
 
-const styles = {}
+import moment from 'moment';
+
+const styles = theme => ({
+  typography: {
+    marginBottom: theme.spacing.unit*3,
+  },
+  button: {
+    marginTop: theme.spacing.unit,
+  },
+});
 
 class Projects extends Component {
   constructor(props) {
@@ -42,10 +51,11 @@ class Projects extends Component {
         const projects = [];
         querySnapshot.forEach(doc => {
           const data = doc.data();
+          const createdAt = moment(data.createdAt).format("MMM Do YYYY");
           const row = {
             name: data.projectInfo.name,
             client: data.projectInfo.client,
-            createdAt: data.createdAt,
+            createdAt,
             status: data.status
           }
           projects.push(row)
@@ -96,9 +106,9 @@ class Projects extends Component {
 
     return (
       <div>
-        <Typography variant='h5'>Overview of existing projects</Typography>
+        <Typography className={classes.typography} variant='h5'>Overview of existing projects</Typography>
 
-        {loading && <Typography >Loading ...</Typography>}
+        {loading && <Typography className={classes.typography}>Loading ...</Typography>}
 
         {projects && (
           <ProjectList
@@ -109,7 +119,7 @@ class Projects extends Component {
           />
         )}
 
-        {!projects && <Typography >There are no projects ...</Typography>}
+        {!projects && <Typography className={classes.typography}>There are no projects ...</Typography>}
 
         {!loading && projects && (
           <Button
@@ -117,7 +127,7 @@ class Projects extends Component {
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
+            className={classes.button}
             onClick={this.onNextPage}
           >
             More

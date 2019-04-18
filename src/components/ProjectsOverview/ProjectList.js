@@ -159,32 +159,11 @@ MuiVirtualizedTable.defaultProps = {
 
 const WrappedVirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
-// const data = [
-//   ['Frozen yoghurt', 159, 6.0, 24, 4.0],
-//   ['Ice cream sandwich', 237, 9.0, 37, 4.3],
-//   ['Eclair', 262, 16.0, 24, 6.0],
-//   ['Cupcake', 305, 3.7, 67, 4.3],
-//   ['Gingerbread', 356, 16.0, 49, 3.9],
-// ];
-
-// let id = 0;
-// function createData(dessert, calories, fat, carbs, protein) {
-//   id += 1;
-//   return { id, dessert, calories, fat, carbs, protein };
-// }
-
-// const rows = [];
-
-// for (let i = 0; i < 200; i += 1) {
-//   const randomSelection = data[Math.floor(Math.random() * data.length)];
-//   rows.push(createData(...randomSelection));
-// }
-
 function ReactVirtualizedTable(props) {
   const rows = props.projects;
   console.log(rows)
   return (
-    <Paper style={{ height: 400, width: '100%' }}>
+    <Paper style={{ height: 370, width: '100%' }}>
       <WrappedVirtualizedTable
         rowCount={rows.length}
         rowGetter={({ index }) => rows[index]}
@@ -204,12 +183,13 @@ function ReactVirtualizedTable(props) {
           },
           {
             width: 100,
+            flexGrow: 1.0,
             label: 'Created at',
             dataKey: 'createdAt',
-            numeric: true,
           },
           {
             width: 100,
+            flexGrow: 1.0,
             label: 'Status',
             dataKey: 'status',
           },
