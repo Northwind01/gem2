@@ -1,4 +1,6 @@
 import React from 'react';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
 
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -161,13 +163,12 @@ const WrappedVirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 function ReactVirtualizedTable(props) {
   const rows = props.projects;
-  console.log(rows)
   return (
     <Paper style={{ height: 370, width: '100%' }}>
       <WrappedVirtualizedTable
         rowCount={rows.length}
         rowGetter={({ index }) => rows[index]}
-        onRowClick={event => console.log(event)}
+        onRowClick={event => props.history.push(`/project/${event.rowData.projectId}`)}
         columns={[
           {
             width: 100,
@@ -199,4 +200,6 @@ function ReactVirtualizedTable(props) {
   );
 }
 
-export default ReactVirtualizedTable;
+export default compose(
+  withRouter,
+)(ReactVirtualizedTable);

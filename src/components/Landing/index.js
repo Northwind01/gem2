@@ -77,7 +77,7 @@ function Landing(props) {
               gem
             </Typography>
             <Typography variant="h6" align="center" color="textSecondary" paragraph>
-              enjoy analytics with a powerfull and intuitive tool!
+              finds sense in data
             </Typography>
             <div className={classes.heroButtons}>
               <Grid container spacing={16} justify="center">

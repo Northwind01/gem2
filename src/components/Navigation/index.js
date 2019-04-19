@@ -38,7 +38,7 @@ const Navigation = ({ authUser, classes }) => {
           </IconButton>
           <Typography variant="h6" color="inherit" className={classes.grow}>
             <Link href={ROUTES.LANDING} color="inherit" underline="none">
-              gem - find sense in data
+              gem
             </Link>
           </Typography>
           

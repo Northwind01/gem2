@@ -56,11 +56,11 @@ class Projects extends Component {
             name: data.projectInfo.name,
             client: data.projectInfo.client,
             createdAt,
-            status: data.status
+            status: data.status,
+            projectId: doc.id
           }
           projects.push(row)
         })
-        console.log('getting', projects)
         this.props.onSetProjects(projects);
         this.setState({ loading: false });
       });

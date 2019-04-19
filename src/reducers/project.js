@@ -19,6 +19,11 @@ const applySetProject = (state, project) => ({
   ...project,
 });
 
+const readFile = (state, file) => ({
+  ...state,
+  fileRead: file,
+});
+
 function projectReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case 'SAVE_PROJECT_INFO': {
@@ -32,6 +37,9 @@ function projectReducer(state = INITIAL_STATE, action) {
     }
     case 'PROJECT_SET': {
       return applySetProject(state, action.project);
+    }
+    case 'READ_FILE': {
+      return readFile(state, action.file);
     }
     default:
       return state;

@@ -1,5 +1,5 @@
-import Regression from './Regression';
+import Reg1 from './Reg1/index.js';
 
 export {
-  Regression,
+  Reg1,
 };
