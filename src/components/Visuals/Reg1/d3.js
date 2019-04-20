@@ -1,9 +1,9 @@
-const _ = require('underscore');
-const d3 = require('d3');
-require('d3-selection-multi');
+import * as _ from 'underscore';
+import * as d3 from 'd3';
+import * as d3SM from 'd3-selection-multi';
 
-// HELPERS
-function parseData(d) {
+  // HELPERS
+  function parseData(d) {
     var keys = _.keys(d[0]);
     return _.map(d, function(d) {
       var o = {};
@@ -42,9 +42,8 @@ function parseData(d) {
     function sum(m, v) {return m + v;}
     function sumSquares(m, v) {return m + v * v;}
     function filterNaN(m, v, i) {
-        if (!isNaN(v)) m.push(i); 
-        return m;
-    }
+        if (!isNaN(v)) m.push(i)
+        return m;}
   
     // clean the data (because we know that some values are missing)
     var xNaN = _.reduce(xArray, filterNaN , []);
@@ -71,36 +70,46 @@ function parseData(d) {
     // console.log(r, m, b);
     return {r: r, m: m, b: b};
   }
-  
-export default (ref, url) => {
-  d3.csv(url, function(data) {
-  
-    var xAxis = 'GDP', yAxis = 'Well-being';
-    var xAxisOptions = ["GDP", "Equality", "Food consumption", "Alcohol consumption", "Energy consumption", "Family", "Working hours", "Work income", "Health spending", "Military spending"]
-    // var yAxisOptions = ["Well-being"];
-    var descriptions = {
-      "GDP" : "GDP per person (US$)",
-      "Energy consumption" : "Residential electricity use (kWh per year per person)",
-      "Equality" : "Equality (based on GINI index) (0 = low equality, 100 = high equality)",
-      "Work income" : "Hourly pay per person (US$)",
-      "Food consumption": "Food supply (kCal per day per person)",
-      "Family" : "Fertility (children per women)",
-      "Alcohol consumption" : "Alcohol consumption (litres of pure alchohol per year per person)",
-      "Working hours" : "Average working hours per week per person",
-      "Military spending" : "Military spending (% of GDP)",
-      "Health spending" : "Government health spending (% of government spend)"
-    };
-  
+
+export default (input, setup) => {
+  d3.csv(input).then(data => {
+    var { features, labels, fieldDescriptions } = setup;
     var keys = _.keys(data[0]);
+    var xAxis, yAxis, descriptions;
+    if (labels) yAxis = labels[0];
+    else yAxis = keys[keys.length-1];
+    if (features) xAxis = features[0];
+    else xAxis = keys[0];
+    var xAxisOptions = _.filter(keys, el => el != yAxis);
+    if (fieldDescriptions) descriptions = fieldDescriptions
+    else {
+        descriptions = {};
+        _.forEach(xAxis, (el) => descriptions[el] = el);
+    }
+  
+    // var xAxis = 'GDP', yAxis = 'Well-being';
+    // var xAxisOptions = ["GDP", "Equality", "Food consumption", "Alcohol consumption", "Energy consumption", "Family", "Working hours", "Work income", "Health spending", "Military spending"]
+    // // var yAxisOptions = ["Well-being"];
+    // var descriptions = {
+    //   "GDP" : "GDP per person (US$)",
+    //   "Energy consumption" : "Residential electricity use (kWh per year per person)",
+    //   "Equality" : "Equality (based on GINI index) (0 = low equality, 100 = high equality)",
+    //   "Work income" : "Hourly pay per person (US$)",
+    //   "Food consumption": "Food supply (kCal per day per person)",
+    //   "Family" : "Fertility (children per women)",
+    //   "Alcohol consumption" : "Alcohol consumption (litres of pure alchohol per year per person)",
+    //   "Working hours" : "Average working hours per week per person",
+    //   "Military spending" : "Military spending (% of GDP)",
+    //   "Health spending" : "Government health spending (% of government spend)"
+    // };
     var data = parseData(data);
     var bounds = getBounds(data, 1);
   
     // SVG AND D3 STUFF
-    var svg = ref;
-    // d3.select("#chart")
-    //   .append("svg")
-    //   .attr("width", 1000)
-    //   .attr("height", 640);
+    var svg = d3.select("#chart")
+      .append("svg")
+      .attr("width", 1000)
+      .attr("height", 640);
     var xScale, yScale;
   
     svg.append('g')
@@ -141,7 +150,7 @@ export default (ref, url) => {
     // Country name
     d3.select('svg g.chart')
       .append('text')
-      .attr({'id': 'countryLabel', 'x': 0, 'y': 170})
+      .attrs({'id': 'countryLabel', 'x': 0, 'y': 170})
       .style({'font-size': '80px', 'font-weight': 'bold', 'fill': '#ddd'});
   
     // Best fit line (to appear behind points)
@@ -152,18 +161,18 @@ export default (ref, url) => {
     // Axis labels
     d3.select('svg g.chart')
       .append('text')
-      .attr({'id': 'xLabel', 'x': 400, 'y': 670, 'text-anchor': 'middle'})
+      .attrs({'id': 'xLabel', 'x': 400, 'y': 670, 'text-anchor': 'middle'})
       .text(descriptions[xAxis]);
   
     d3.select('svg g.chart')
       .append('text')
       .attr('transform', 'translate(-60, 330)rotate(-90)')
-      .attr({'id': 'yLabel', 'text-anchor': 'middle'})
+      .attrs({'id': 'yLabel', 'text-anchor': 'middle'})
       .text('Well-being (scale of 0-10)');
   
     // Render points
     updateScales();
-    var pointColour = d3.scale.category20b();
+    var pointColour = d3.scaleOrdinal().range(["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"]);
     d3.select('svg g.chart')
       .selectAll('circle')
       .data(data)
@@ -211,12 +220,12 @@ export default (ref, url) => {
     //// RENDERING FUNCTIONS
     function updateChart(init) {
       updateScales();
-  
+
       d3.select('svg g.chart')
         .selectAll('circle')
         .transition()
         .duration(500)
-        .ease('quad-out')
+        //.ease('quad-out')
         .attr('cx', function(d) {
           return isNaN(d[xAxis]) ? d3.select(this).attr('cx') : xScale(d[xAxis]);
         })
@@ -226,7 +235,7 @@ export default (ref, url) => {
         .attr('r', function(d) {
           return isNaN(d[xAxis]) || isNaN(d[yAxis]) ? 0 : 12;
         });
-  
+        console.log('here')
       // Also update the axes
       d3.select('#xAxis')
         .transition()
@@ -250,32 +259,28 @@ export default (ref, url) => {
       // Fade in
       d3.select('#bestfit')
         .style('opacity', 0)
-        .attr({'x1': xScale(x1), 'y1': yScale(y1), 'x2': xScale(x2), 'y2': yScale(y2)})
+        .attrs({'x1': xScale(x1), 'y1': yScale(y1), 'x2': xScale(x2), 'y2': yScale(y2)})
         .transition()
         .duration(1500)
         .style('opacity', 1);
     }
   
     function updateScales() {
-      xScale = d3.scale.linear()
+      xScale = d3.scaleLinear()
                       .domain([bounds[xAxis].min, bounds[xAxis].max])
                       .range([20, 780]);
   
-      yScale = d3.scale.linear()
+      yScale = d3.scaleLinear()
                       .domain([bounds[yAxis].min, bounds[yAxis].max])
                       .range([600, 100]);    
     }
   
     function makeXAxis(s) {
-      s.call(d3.svg.axis()
-        .scale(xScale)
-        .orient("bottom"));
+      s.call(d3.axisBottom(xScale));
     }
   
     function makeYAxis(s) {
-      s.call(d3.svg.axis()
-        .scale(yScale)
-        .orient("left"));
+      s.call(d3.axisLeft(yScale));
     }
   
     function updateMenus() {
@@ -292,5 +297,6 @@ export default (ref, url) => {
     }
   
   })
-}
+}  
+  
   
