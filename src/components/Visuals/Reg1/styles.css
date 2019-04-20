@@ -1,0 +1,39 @@
+/* Document styling */
+  
+.menulistitem {
+    font-weight: 100;
+    cursor: pointer;
+    padding: 10px;
+    display: inline-block;
+}
+  
+#x-axis-menu {
+    list-style-type: none;
+    text-align: center;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.menulistitem:hover {
+    color: #000;
+}
+  
+.menulistitem.preview {
+    font-weight: 400;
+}
+  
+.menulistitem.selected {
+    font-weight: bold;
+}
+  
+/* SVG styling */
+line#bestfit {
+	stroke: #ddd;
+	stroke-width: 10px;
+}
+
+#xAxis path, #yAxis path, #xAxis line, #yAxis line {
+	stroke: #ccc;
+	fill: none;
+	shape-rendering: crispEdges;
+}

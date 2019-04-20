@@ -86,7 +86,7 @@ export default (input, setup) => {
         descriptions = {};
         _.forEach(xAxis, (el) => descriptions[el] = el);
     }
-  
+    // Hard-coded example
     // var xAxis = 'GDP', yAxis = 'Well-being';
     // var xAxisOptions = ["GDP", "Equality", "Food consumption", "Alcohol consumption", "Energy consumption", "Family", "Working hours", "Work income", "Health spending", "Military spending"]
     // // var yAxisOptions = ["Well-being"];
@@ -123,6 +123,7 @@ export default (input, setup) => {
       .enter()
       .append('li')
       .text(function(d) {return d;})
+      .classed("menulistitem", true)
       .classed('selected', function(d) {
         return d === xAxis;
       })
@@ -168,7 +169,7 @@ export default (input, setup) => {
       .append('text')
       .attr('transform', 'translate(-60, 330)rotate(-90)')
       .attrs({'id': 'yLabel', 'text-anchor': 'middle'})
-      .text('Well-being (scale of 0-10)');
+      .text(yAxis);
   
     // Render points
     updateScales();
