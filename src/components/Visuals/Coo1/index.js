@@ -16,7 +16,7 @@ class Visual extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visualId: 'reg1',
+      visualId: 'coo1',
       d3: undefined,
       visualDetails: {}
     }
@@ -36,7 +36,11 @@ class Visual extends Component {
   createVisualisation = () => {
     const data = this.props.project.file;
     const dataFields = this.props.project.output.dataFields;
-    data && this.setState({d3: visual(data, dataFields)});
+    data && this.setState({d3: visual(data, {
+      container: '#chart-container',
+      start_color: 'white',
+      end_color: '#054169'
+    })});
   }
 
   render() {
@@ -45,16 +49,10 @@ class Visual extends Component {
     return (
       <div className={classes.visual}>
         <div id="wrapper">
-          <Typography variant='h5'>{this.state.visualDetails.title || 'What features correlate with the outcome?'}</Typography>
-          <div id="menu">
-            {/* <h2>&uarr; Y axis</h2>
-                  <ul id="y-axis-menu"></ul>
-                  <h2>&rarr; X axis</h2> */}
-            <ul id="x-axis-menu"></ul>
-          </div>
+          <Typography variant='h5'>{this.state.visualDetails.title || 'Co-occurrence matrix '}</Typography>
           {this.state.d3 && <RD3Component data={this.state.d3} className={classes.d3Component}/>}
-          <div id="chart" ></div>
-          <Typography >{this.state.visualDetails.comments || 'This chart plots the Y against different X measures. Start by clicking the measures  above and see what trends you can identify.'}</Typography>
+          <div id="chart-container" ></div>
+          <Typography >{this.state.visualDetails.comments || 'ntify.'}</Typography>
         </div>
       </div>
     )

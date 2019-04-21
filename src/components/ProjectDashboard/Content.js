@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Typography from '@material-ui/core/Typography';
+//import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 
-import { Reg1 } from '../Visuals';
+//import { Reg1 } from '../Visuals';
 
 const styles = theme => ({
   paper: {
@@ -29,11 +29,10 @@ function Content(props) {
 
   return (
     <Paper className={classes.paper}>
-      <div className={classes.contentWrapper}>
+      {/* <div className={classes.contentWrapper}>
         <Typography color="textSecondary" align="center">
-          <Reg1 />
         </Typography>
-      </div>
+      </div> */}
     </Paper>
   );
 }

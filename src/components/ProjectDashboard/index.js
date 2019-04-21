@@ -160,8 +160,6 @@ class Paperbase extends React.Component {
   render() {
     const { classes, project } = this.props;
 
-    console.log(project)
-
     return (
       <MuiThemeProvider theme={theme}>
         <div className={classes.root}>

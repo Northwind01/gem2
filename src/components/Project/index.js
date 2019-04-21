@@ -39,27 +39,10 @@ class Project extends Component {
     this.unsubscribe = this.props.firebase
       .db.collection('projects').doc(id)
       .onSnapshot(doc => {
-        // const url = doc.data().file;
-        // this.loadAndReadCSV(url);
         this.props.onSetProject(doc.data());
         this.setState({ loading: false });
       });
   }
-
-  // loadAndReadCSV(url) {
-  //   const request = new XMLHttpRequest();
-  //   request.open('GET', url, true);
-  //   request.responseType = 'blob';
-  //   request.onload = () => {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(request.response);
-  //     reader.onload = e => {
-  //       //const csv = d3_lib.csv.parse(e.target.result);
-  //       this.props.readFile(e.target.result);
-  //     };
-  //   };
-  //   request.send();
-  // }
 
   componentWillUnmount() {
     this.unsubscribe();
@@ -73,7 +56,7 @@ class Project extends Component {
       <div>
       {loading && <Typography >Loading ...</Typography>}
 
-      {project.projectInfo && (
+      {project.input && (
         <ProjectDashboard project={project}/>
         // <Grid container spacing={0}>
         //   <Grid item sm>

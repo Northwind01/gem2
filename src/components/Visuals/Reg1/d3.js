@@ -71,14 +71,14 @@ import * as d3SM from 'd3-selection-multi';
     return {r: r, m: m, b: b};
   }
 
-export default (input, setup) => {
+export default (input, dataFields) => {
   d3.csv(input).then(data => {
-    var { features, labels, fieldDescriptions } = setup;
+    var { features, labels, fieldDescriptions } = dataFields;
     var keys = _.keys(data[0]);
     var xAxis, yAxis, descriptions;
-    if (labels) yAxis = labels[0];
+    if (labels.length > 0) yAxis = labels[0];
     else yAxis = keys[keys.length-1];
-    if (features) xAxis = features[0];
+    if (features.length > 0) xAxis = features[0];
     else xAxis = keys[0];
     var xAxisOptions = _.filter(keys, el => el != yAxis);
     if (fieldDescriptions) descriptions = fieldDescriptions
@@ -149,10 +149,10 @@ export default (input, setup) => {
     //   });
   
     // Country name
-    d3.select('svg g.chart')
-      .append('text')
-      .attrs({'id': 'countryLabel', 'x': 0, 'y': 170})
-      .style({'font-size': '80px', 'font-weight': 'bold', 'fill': '#ddd'});
+    // d3.select('svg g.chart')
+    //   .append('text')
+    //   .attrs({'id': 'countryLabel', 'x': 270, 'y': 270})
+    //   .style({'font-size': '80px', 'font-weight': 'bold', 'fill': '#ddd'});
   
     // Best fit line (to appear behind points)
     d3.select('svg g.chart')

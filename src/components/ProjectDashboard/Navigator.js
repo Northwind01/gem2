@@ -89,12 +89,13 @@ const styles = theme => ({
 
 function Navigator(props) {
   const { classes, project, ...other } = props;
+  console.log(project)
 
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
         <ListItem className={classNames(classes.firebase, classes.item, classes.itemCategory)}>
-          {project.projectInfo.name}
+          {project.input.projectInfo.name}
         </ListItem>
         <ListItem className={classNames(classes.item, classes.itemCategory)}>
           <ListItemIcon>

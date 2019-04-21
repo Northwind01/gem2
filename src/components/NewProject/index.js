@@ -68,12 +68,26 @@ class VerticalLinearStepper extends Component {
   };
 
   onCreateProject = (authUser) => {
-    const project = {...this.props.project};
-    project['userId'] = authUser.uid;
-    project['createdAt'] = Date.now();
-    project['status'] = 'open';
-    const file = project.projectData.FILE;
-    delete project.projectData.FILE;
+    const project = {
+      input: this.props.project,
+      userId: authUser.uid,
+      createdAt: Date.now(),
+      status: 'open',
+      output: {
+        dataFields: {
+          features: [],
+          labels: [],
+          //fieldDescriptions: {},
+        },
+        visuals: [
+          {
+            visual: 'coo1'
+          },
+        ]
+      }
+    };
+    const file = project.input.projectData.FILE;
+    delete project.input.projectData.FILE;
 
     this.props.firebase.db.collection('projects').add(project)
       .then((docRef)=>{

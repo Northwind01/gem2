@@ -53,8 +53,8 @@ class Projects extends Component {
           const data = doc.data();
           const createdAt = moment(data.createdAt).format("MMM Do YYYY");
           const row = {
-            name: data.projectInfo.name,
-            client: data.projectInfo.client,
+            name: data.input.projectInfo.name,
+            client: data.input.projectInfo.client,
             createdAt,
             status: data.status,
             projectId: doc.id
