@@ -1,18 +1,11 @@
-  .axis {
-    font-family: Helvetica, sans-serif;
-    font-size: 14px;
-  }
-  
-  .axis text{
-    fill: black;
-  }
-  
-  svg text{
-    font-family: Helvetica, sans-serif;
-    font-size: 14px;
-  }
-  
-  .label-background-strong {
-    fill: white;
-    fill-opacity: .8;
-  }
+.background {
+  fill: #eee;
+}
+
+line {
+  stroke: #fff;
+}
+
+text.active {
+  fill: red;
+}

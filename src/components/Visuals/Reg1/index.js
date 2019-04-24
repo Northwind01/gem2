@@ -45,7 +45,14 @@ class Visual extends Component {
     return (
       <div className={classes.visual}>
         <div id="wrapper">
-          <Typography variant='h5'>{this.state.visualDetails.title || 'What features correlate with the outcome?'}</Typography>
+          <Typography 
+            gutterBottom={true}  
+            variant="h5">
+              {this.state.visualDetails.title || 'What features correlate with the outcome?'}
+          </Typography>
+          <Typography>
+            {this.state.visualDetails.comments || 'This chart plots outcomes (y axis) against different features (x axis). Start by clicking the features below and see what trends you can identify.'}
+          </Typography>
           <div id="menu">
             {/* <h2>&uarr; Y axis</h2>
                   <ul id="y-axis-menu"></ul>
@@ -54,7 +61,6 @@ class Visual extends Component {
           </div>
           {this.state.d3 && <RD3Component data={this.state.d3} className={classes.d3Component}/>}
           <div id="chart" ></div>
-          <Typography >{this.state.visualDetails.comments || 'This chart plots the Y against different X measures. Start by clicking the measures  above and see what trends you can identify.'}</Typography>
         </div>
       </div>
     )

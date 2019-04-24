@@ -67,7 +67,12 @@ class Header extends Component {
     const tabLabels = [];
     const projectVisuals = this.props.project.output.visuals;
     projectVisuals.forEach((el, i) => {
-      tabLabels.push(<Tab textColor="inherit" label={el.tabName || `Visual ${i+1}`} />)
+      tabLabels.push(
+      <Tab 
+        key={i+1}
+        textColor="inherit" 
+        label={el.tabName || `Visual ${i+1}`} 
+      />)
     })
     return tabLabels
   }

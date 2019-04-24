@@ -236,7 +236,7 @@ export default (input, dataFields) => {
         .attr('r', function(d) {
           return isNaN(d[xAxis]) || isNaN(d[yAxis]) ? 0 : 12;
         });
-        console.log('here')
+    
       // Also update the axes
       d3.select('#xAxis')
         .transition()

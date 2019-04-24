@@ -93,7 +93,7 @@ class VerticalLinearStepper extends Component {
       .then((docRef)=>{
         this.props.saveProjectInfo({id: docRef.id});
 
-        const path = 'projectFiles/' + docRef.id + '.csv';
+        const path = 'projectFiles/' + docRef.id;
         const url = this.props.firebase.storage.ref().child(path);
         const fileUpload = url.put(file);
         fileUpload.on('state_changed', snapshot => {

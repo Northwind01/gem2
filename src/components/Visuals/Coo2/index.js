@@ -16,7 +16,7 @@ class Visual extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visualId: 'coo1',
+      visualId: 'coo2',
       d3: undefined,
       visualDetails: {}
     }
@@ -38,7 +38,7 @@ class Visual extends Component {
     const dataFields = this.props.project.output.dataFields;
     data && this.setState({d3: visual(data, {
       container: '#chart-container',
-      start_color: 'yellow',
+      start_color: 'white',
       end_color: '#9b0000'
     })});
   }
@@ -56,16 +56,16 @@ class Visual extends Component {
           </Typography>
           <Typography 
             align="left">
-              {this.state.visualDetails.comments || 'This matrix diagram visualizes items co-occurrences. Each colored cell represents two items that appeared in the same data structure; darker cells indicate items that co-occurred more frequently. Use the drop-down menu to reorder the matrix and explore the data.'}
+              {/* {this.state.visualDetails.comments || 'This matrix diagram visualizes items co-occurrences. Each colored cell represents two items that appeared in the same data structure; darker cells indicate items that co-occurred more frequently. Use the drop-down menu to reorder the matrix and explore the data.'} */}
           </Typography>
-          <div>
+          {/* <div>
             <p>Order: <select id="order">
               <option value="name">by name</option>
               <option value="count">by frequency</option>
               <option value="group">by cluster</option>
             </select>
             </p>
-          </div>
+          </div> */}
           {this.state.d3 && <RD3Component data={this.state.d3} className={classes.d3Component}/>}
           <div id="chart-container" ></div>
         </div>
